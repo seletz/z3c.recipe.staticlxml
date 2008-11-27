@@ -1,0 +1,6 @@
+trunk
+=====
+
+- Added tweaks needed for Mac OS X [seletz]
+- Added basic build steps for liblxml2, libxslt and lxml. [seletz]
+- Created recipe with ZopeSkel [seletz].
