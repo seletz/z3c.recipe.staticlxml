@@ -1,6 +1,11 @@
 trunk
 =====
 
+- no changes yet
+
+0.1 (2008-11-27)
+================
+
 - Added ``iconv`` library, which enables fully static builds. This is
   actually a bug in lxml's setup. [seletz]
 - Updated docs, removed junk code [seletz]

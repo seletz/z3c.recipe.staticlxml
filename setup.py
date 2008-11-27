@@ -28,7 +28,7 @@ long_description = (
     + '\n' + 
     read('CHANGES.txt')
     + '\n' +
-   'Download\n'
+    'Download\n'
     '********\n'
     )
 entry_point = 'z3c.recipe.staticlxml:Recipe'
