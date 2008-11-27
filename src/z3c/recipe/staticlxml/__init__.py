@@ -227,22 +227,6 @@ class Recipe(object):
 
     update = install
 
-    def lxml_build_ext(self):
-        """
-        [lxml]
-        recipe = zc.recipe.egg:custom
-        egg = lxml
-        include-dirs = ${libxml2:location}/include/libxml2
-                       ${libxslt:location}/include
-        library-dirs = ${libxml2:location}/lib
-                       ${libxslt:location}/lib
-        rpath = ${libxml2:location}/lib
-                ${libxslt:location}/lib
-        """
-        return dict(
-                include
-            )
-
     def lxml_build_env(self):
         return dict(
                 XSLT_CONFIG=self.xslt_config,
