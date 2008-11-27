@@ -1,6 +1,8 @@
 trunk
 =====
 
+- Added ``iconv`` library, which enables fully static builds. This is
+  actually a bug in lxml's setup. [seletz]
 - Updated docs, removed junk code [seletz]
 - Added tweaks needed for Mac OS X [seletz]
 - Added basic build steps for liblxml2, libxslt and lxml. [seletz]

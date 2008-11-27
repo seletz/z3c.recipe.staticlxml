@@ -161,6 +161,8 @@ class Recipe(object):
                 os.path.join(self.xml2_location, "lib"),
                 os.path.join(self.xslt_location, "lib"),
                 )
+        self.options["libraries"] = "iconv" # missing in lxml setup.py jungle, but needed by
+                                            # libxml2 and libxslt
         self.lxml_custom = Custom(self.buildout, self.name, self.options)
         self.lxml_custom.environment = self.lxml_build_env()
 
