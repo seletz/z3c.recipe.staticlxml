@@ -34,7 +34,7 @@ long_description = (
 entry_point = 'z3c.recipe.staticlxml:Recipe'
 entry_points = {"zc.buildout": ["default = %s" % entry_point]}
 
-tests_require=['zope.testing', 'zc.buildout']
+tests_require=['zope.testing', 'zc.buildout', 'zc.recipe.egg', 'zc.recipe.cmmi']
 
 setup(name='z3c.recipe.staticlxml',
       version=version,
