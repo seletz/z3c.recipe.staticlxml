@@ -14,10 +14,11 @@ The recipe supports the following options:
       http://dist.repoze.org/lemonade/dev/cmmi/libxml2-2.6.32.tar.gz
 
 **build-libxslt, build-libxml2**
-    Set to ``true`` if these should be build.  Needed for a static build.
+    Set to ``true`` (default) if these should be build, ``false`` otherwise.
+    Needes to be ``true`` for a static build.
 
 **static-build**
-    ``true`` or ``false``
+    ``true`` or ``false``.  On OS X this defaults to ``true``.
 
 **xml2-loction**
     Needed if ``libxml2`` is not built.
@@ -68,10 +69,8 @@ This is an example buildout::
     [lxml]
     recipe = z3c.recipe.staticlxml
     egg = lxml
-    force = false
-    build-libxml2 = true
-    build-libxslt = true
-    static-build = true
 
+This will build a ``static`` version of the ``lxml`` egg, that is, it won't have
+any dependencies on ``libxml2`` and ``libxslt``.
 
 

@@ -56,7 +56,7 @@ class Recipe(object):
         options["force"] = force and "true" or "false"
 
         # XLST build or location option
-        build_xslt = options.get("build-libxslt")
+        build_xslt = options.get("build-libxslt", "true")
         self.build_xslt = build_xslt in ("true", "True")
         options["build-libxslt"] = build_xslt and "true" or "false"
 
@@ -67,7 +67,7 @@ class Recipe(object):
                         " ``build-libxslt`` to ``true``")
 
         # XML2 build or location option
-        build_xml2 = options.get("build-libxml2")
+        build_xml2 = options.get("build-libxml2", "true")
         self.build_xml2 = build_xml2 in ("true", "True")
         options["build-libxml2"] = build_xml2 and "true" or "false"
 
@@ -78,7 +78,7 @@ class Recipe(object):
                         " ``build-libxml2`` to ``true``")
 
         # static build option
-        static_build = options.get("static-build")
+        static_build = options.get("static-build", "darwin" in sys.platform and "true" or None)
         self.static_build = static_build in ("true", "True")
         if self.static_build and not (self.build_xml2 and self.build_xslt):
             raise UserError("Static build is only possible if both "
