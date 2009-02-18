@@ -1,6 +1,9 @@
 trunk
 =====
 
+0.4 (2009-02-18)
+================
+
 - Fix to prevent rebuilding lxml all the time, thus reducing the lxml tax. [seletz]
 
 0.3 (2008-12-01)
