@@ -20,10 +20,10 @@ The recipe supports the following options:
 **static-build**
     ``true`` or ``false``.  On OS X this defaults to ``true``.
 
-**xml2-loction**
+**xml2-location**
     Needed if ``libxml2`` is not built.
 
-**xslt-loction**
+**xslt-location**
     Needed if ``libxslt`` is not built.
 
 **xslt-config**
