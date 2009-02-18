@@ -10,13 +10,11 @@ from fnmatch import fnmatch
 
 import distutils.core
 from distutils import sysconfig
-import setuptools.command.easy_install
 
 from zc.buildout import UserError
 from zc.buildout import easy_install
 
 from zc.recipe.egg.custom import Custom
-from zc.recipe.egg.custom import build_ext
 
 import zc.recipe.cmmi
 
@@ -124,7 +122,11 @@ class Recipe(object):
             loc = self.xml2_cmmi.install()
         self.options["xml2-location"] = self.xml2_location = loc
 
+    def update(self):
+        pass
+
     def install(self):
+        options = self.options
 
         # build dependent libs if requested
         if self.build_xml2:
@@ -145,36 +147,35 @@ class Recipe(object):
             self.remove_dynamic_libs(self.xml2_location)
 
         # build LXML
-        dest = self.options.get("location")
+        dest = options.get("location")
         if not os.path.exists(dest):
             os.mkdir(dest)
 
-        self.options["include-dirs"] = "%s %s" % (
+        options["include-dirs"] = "%s %s" % (
                 os.path.join(self.xml2_location, "include", "libxml2"),
                 os.path.join(self.xslt_location, "include"),
                 )
-        self.options["library-dirs"] = "%s %s" % (
+        options["library-dirs"] = "%s %s" % (
                 os.path.join(self.xml2_location, "lib"),
                 os.path.join(self.xslt_location, "lib"),
                 )
-        self.options["rpath"] = "%s %s" % (
+        options["rpath"] = "%s %s" % (
                 os.path.join(self.xml2_location, "lib"),
                 os.path.join(self.xslt_location, "lib"),
                 )
 
         if "darwin" in sys.platform:
             self.logger.warn("Adding ``iconv`` to libs due to a lxml setup bug.")
-            self.options["libraries"] = "iconv"
+            options["libraries"] = "iconv"
 
         self.lxml_custom = Custom(self.buildout, self.name, self.options)
         self.lxml_custom.environment = self.lxml_build_env()
+        self.lxml_custom.options["_d"] = self.buildout['buildout']['eggs-directory']
 
         self.logger.info("Building lxml ...")
         self.lxml_dest = self.lxml_custom.install()
 
-        dest = [dest, ] # dont report libxml2 and libxslt to buildout -- BO removes them
-        dest.extend(self.lxml_dest)
-        return tuple(dest)
+        return ()
 
     def get_ldshared(self):
         import distutils.sysconfig
