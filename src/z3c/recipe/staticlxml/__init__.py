@@ -129,10 +129,12 @@ class Recipe(object):
         # Only do expensive download/compilation when there's no existing egg.
         path = [install_location]
         req_string = self.options['egg'] # 'lxml' or 'lxml == 2.0.9'
-        version_req = self.buildout['versions']['lxml']
-        if version_req:
-            # [versions] wins and is often the place where it is specified.
-            req_string = 'lxml == %s' % version_req
+        version_part = self.buildout['buildout'].get('versions')
+        if version_part:
+            version_req = self.buildout[version_part].get('lxml')
+            if version_req:
+                # [versions] wins and is often the place where it is specified.
+                req_string = 'lxml == %s' % version_req
         req = pkg_resources.Requirement.parse(req_string)
         matching_dists = [d for d in pkg_resources.Environment(path)['lxml']
                           if d in req]
