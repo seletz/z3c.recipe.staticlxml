@@ -5,14 +5,11 @@ import sys
 import os
 import pkg_resources
 import logging
-import subprocess
 from fnmatch import fnmatch
 
-import distutils.core
 from distutils import sysconfig
 
 from zc.buildout import UserError
-from zc.buildout import easy_install
 
 from zc.recipe.egg.custom import Custom
 
@@ -127,6 +124,30 @@ class Recipe(object):
 
     def install(self):
         options = self.options
+        install_location = self.buildout['buildout']['eggs-directory']
+
+        # Only do expensive download/compilation when there's no existing egg.
+        path = [install_location]
+        req_string = self.options['egg'] # 'lxml' or 'lxml == 2.0.9'
+        version_req = self.buildout['versions']['lxml']
+        if version_req:
+            # [versions] wins and is often the place where it is specified.
+            req_string = 'lxml == %s' % version_req
+        req = pkg_resources.Requirement.parse(req_string)
+        matching_dists = [d for d in pkg_resources.Environment(path)['lxml']
+                          if d in req]
+        if matching_dists and not self.force:
+            # We have found existing lxml eggs that match our requirements.
+            # If we specified an exact version, we'll trust that the matched
+            # egg is good. We don't currently accept matches for not-pinned
+            # versions as that would mean lots of code duplication with
+            # easy_install (handling newest=t/f and so).
+            specs = req.specs
+            if len(specs) == 1 and specs[0][0] == '==':
+                self.logger.info("Using existing %s. Delete it if that one "
+                                 "isn't statically compiled.",
+                                 matching_dists[0].location)
+                return ()
 
         # build dependent libs if requested
         if self.build_xml2:
@@ -170,7 +191,7 @@ class Recipe(object):
 
         self.lxml_custom = Custom(self.buildout, self.name, self.options)
         self.lxml_custom.environment = self.lxml_build_env()
-        self.lxml_custom.options["_d"] = self.buildout['buildout']['eggs-directory']
+        self.lxml_custom.options["_d"] = install_location
 
         self.logger.info("Building lxml ...")
         self.lxml_dest = self.lxml_custom.install()
@@ -178,7 +199,6 @@ class Recipe(object):
         return ()
 
     def get_ldshared(self):
-        import distutils.sysconfig
         LDSHARED = sysconfig.get_config_vars().get("LDSHARED")
         self.logger.debug("LDSHARED=%s" % LDSHARED)
         if "darwin" in sys.platform:

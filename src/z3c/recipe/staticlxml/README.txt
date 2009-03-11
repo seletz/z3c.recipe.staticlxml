@@ -73,4 +73,11 @@ This is an example buildout::
 This will build a ``static`` version of the ``lxml`` egg, that is, it won't have
 any dependencies on ``libxml2`` and ``libxslt``.
 
+The egg is installed in your buildout's egg directory (it is *not* installed
+as a development egg).  If you have a global ``eggs-directory`` configured in
+your ``~/.buildout/default.cfg``, the static lxml egg is thus placed in that
+global egg directory.
 
+If you specified a specific version for the lxml egg, the egg directory is
+checked for an existing lxml egg. If found, it is used as-is. Specifying
+``force = true`` of course means that this check isn't performed.

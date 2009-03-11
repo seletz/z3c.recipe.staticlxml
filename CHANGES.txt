@@ -1,6 +1,11 @@
 trunk
 =====
 
+- The recipe checks for an existing egg before doing expensive
+  download/compiles. Previously, the check was implicitly done *after*
+  compiling libmxl/libxslt. The egg name is printed with a warning to delete
+  it if this isn't a proper static egg.  [reinout]
+
 - Fixed readme typos. [seletz]
 
 0.4 (2009-02-18)
