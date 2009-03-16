@@ -1,6 +1,9 @@
 trunk
 =====
 
+0.5 (2009-03-16)
+================
+
 - The recipe checks for an existing egg before doing expensive
   download/compiles. Previously, the check was implicitly done *after*
   compiling libmxl/libxslt. The egg name is printed with a warning to delete
