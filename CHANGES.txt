@@ -1,5 +1,5 @@
-trunk
-=====
+0.6 (2009-03-19)
+================
 
 - Switching off building of the exslt crypt functionality. That crypt
   functionality isn't found anymore on exslt.org itself. And it uses
