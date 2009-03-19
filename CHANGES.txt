@@ -1,6 +1,11 @@
 trunk
 =====
 
+- Switching off building of the exslt crypt functionality. That crypt
+  functionality isn't found anymore on exslt.org itself. And it uses
+  libgcrypt, which somehow leads to runtime errors regarding 'gcry_*' on osx
+  and sometimes on linux.  [reinout]
+
 0.5 (2009-03-16)
 ================
 
