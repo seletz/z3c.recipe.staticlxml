@@ -93,7 +93,7 @@ class Recipe(object):
                 "http://dist.repoze.org/lemonade/dev/cmmi/libxslt-1.1.24.tar.gz")
         self.logger.info("Using libxslt download url %s" % self.xslt_url)
         self.xslt_cmmi.options["url"] = self.xslt_url
-        self.xslt_cmmi.options["extra_options"] = "--with-libxml-prefix=%s --without-python --with-crypto=off" % self.xml2_location
+        self.xslt_cmmi.options["extra_options"] = "--with-libxml-prefix=%s --without-python --without-crypto" % self.xml2_location
         # ^^^ crypto is off as libgcrypt can lead to problems on especially osx and also on some linux machines.
 
         if os.path.exists(os.path.join(self.xslt_cmmi.options["location"], "bin", "xslt-config")):
