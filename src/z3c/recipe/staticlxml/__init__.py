@@ -175,18 +175,15 @@ class Recipe(object):
         if not os.path.exists(dest):
             os.mkdir(dest)
 
-        options["include-dirs"] = "%s %s" % (
-                os.path.join(self.xml2_location, "include", "libxml2"),
-                os.path.join(self.xslt_location, "include"),
-                )
-        options["library-dirs"] = "%s %s" % (
+        options["include-dirs"] = '\n'.join([
+            os.path.join(self.xml2_location, "include", "libxml2"),
+            os.path.join(self.xslt_location, "include")])
+        options["library-dirs"] = '\n'.join([
                 os.path.join(self.xml2_location, "lib"),
-                os.path.join(self.xslt_location, "lib"),
-                )
-        options["rpath"] = "%s %s" % (
+                os.path.join(self.xslt_location, "lib")])
+        options["rpath"] = '\n'.join([
                 os.path.join(self.xml2_location, "lib"),
-                os.path.join(self.xslt_location, "lib"),
-                )
+                os.path.join(self.xslt_location, "lib")])
 
         if "darwin" in sys.platform:
             self.logger.warn("Adding ``iconv`` to libs due to a lxml setup bug.")
