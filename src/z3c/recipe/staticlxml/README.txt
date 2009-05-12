@@ -7,8 +7,9 @@ The recipe supports the following options:
     Set to the desired lxml egg, e.g. ``lxml`` or ``lxml==2.1.2``
 
 **libxslt-url, libxml2-url**
-    The URL to download the source tarball of these libraries from.  Currently
-    defaults to::
+    The URL to download the source tarball of these libraries from.
+    If unset, the [versions] section of the buildout is searched,
+    if nothing is found there, either, these default values are used::
 
       http://dist.repoze.org/lemonade/dev/cmmi/libxslt-1.1.24.tar.gz
       http://dist.repoze.org/lemonade/dev/cmmi/libxml2-2.6.32.tar.gz

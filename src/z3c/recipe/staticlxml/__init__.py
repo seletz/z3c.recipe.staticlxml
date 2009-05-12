@@ -89,8 +89,9 @@ class Recipe(object):
 
     def build_libxslt(self):
         self.logger.info("CMMI libxslt ...")
+        versions = self.buildout.get(self.buildout['buildout'].get('versions', '__invalid__'), {})
         self.options["libxslt-url"] = self.xslt_url = self.options.get("libxslt-url",
-                "http://dist.repoze.org/lemonade/dev/cmmi/libxslt-1.1.24.tar.gz")
+                versions.get("libxslt-url", "http://dist.repoze.org/lemonade/dev/cmmi/libxslt-1.1.24.tar.gz"))
         self.logger.info("Using libxslt download url %s" % self.xslt_url)
         self.xslt_cmmi.options["url"] = self.xslt_url
         self.xslt_cmmi.options["extra_options"] = "--with-libxml-prefix=%s --without-python --without-crypto" % self.xml2_location
@@ -106,8 +107,10 @@ class Recipe(object):
 
     def build_libxml2(self):
         self.logger.info("CMMI libxml2 ...")
+        import pdb; pdb.set_trace();
+        versions = self.buildout.get(self.buildout['buildout'].get('versions', '__invalid__'), {})
         self.options["libxml2-url"] = self.xml2_url = self.options.get("libxml2-url",
-                "http://dist.repoze.org/lemonade/dev/cmmi/libxml2-2.6.32.tar.gz")
+                versions.get("libxml2-url", "http://dist.repoze.org/lemonade/dev/cmmi/libxml2-2.6.32.tar.gz"))
         self.logger.info("Using libxml2 download url %s" % self.xml2_url)
 
         self.xml2_cmmi.options["url"] = self.xml2_url

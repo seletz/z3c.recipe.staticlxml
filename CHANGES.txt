@@ -3,6 +3,7 @@ Trunk
 
 - Passing include-dirs, library-dirs and rpath newline separated as required
   by zc.recipe.egg. This fixes non static build on linux.  [zagy]
+- Consult buildout's [version] section for the libxml2/libxslt-URLs [wosc]
 
 0.6 (2009-03-19)
 ================
