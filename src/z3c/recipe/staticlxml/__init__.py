@@ -107,7 +107,6 @@ class Recipe(object):
 
     def build_libxml2(self):
         self.logger.info("CMMI libxml2 ...")
-        import pdb; pdb.set_trace();
         versions = self.buildout.get(self.buildout['buildout'].get('versions', '__invalid__'), {})
         self.options["libxml2-url"] = self.xml2_url = self.options.get("libxml2-url",
                 versions.get("libxml2-url", "http://dist.repoze.org/lemonade/dev/cmmi/libxml2-2.6.32.tar.gz"))
