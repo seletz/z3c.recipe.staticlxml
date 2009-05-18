@@ -1,8 +1,13 @@
 Trunk
 =====
 
-no changes yet
+0.7.1 (unreleased)
+==================
 
+- Removed accidentally checked in pdb [wosc]
+- Updated our use of zc.recipe.cmmi, which from 1.2.0 on *requires* the URL to
+  be known on construction time. (The new usage is backward-compatible with
+  1.1.x). [wosc]
 
 0.7 (2009-05-18)
 ================
