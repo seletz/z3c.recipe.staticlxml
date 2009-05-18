@@ -8,6 +8,7 @@ import os
 import unittest
 import zc.buildout.tests
 import zc.buildout.testing
+import zc.recipe.cmmi.tests
 
 from zope.testing import doctest, renormalizing
 
@@ -18,7 +19,7 @@ optionflags =  (doctest.ELLIPSIS |
 test_dir = os.path.dirname(os.path.abspath(__file__))
 
 def setUp(test):
-    zc.buildout.testing.buildoutSetUp(test)
+    zc.recipe.cmmi.tests.setUp(test)
 
     # Install the recipe in develop mode
     zc.buildout.testing.install_develop('z3c.recipe.staticlxml', test)

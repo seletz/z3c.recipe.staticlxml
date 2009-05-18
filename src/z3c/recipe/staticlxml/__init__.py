@@ -42,9 +42,6 @@ class Recipe(object):
         self.buildout, self.name, self.options = buildout, name, options
         self.logger = logging.getLogger(name)
 
-        self.xslt_cmmi = zc.recipe.cmmi.Recipe(buildout, "libxslt", options.copy())
-        self.xml2_cmmi = zc.recipe.cmmi.Recipe(buildout, "libxml2", options.copy())
-
         # force build option
         force = options.get("force")
         self.force = force in ("true", "True")
@@ -93,9 +90,12 @@ class Recipe(object):
         self.options["libxslt-url"] = self.xslt_url = self.options.get("libxslt-url",
                 versions.get("libxslt-url", "http://dist.repoze.org/lemonade/dev/cmmi/libxslt-1.1.24.tar.gz"))
         self.logger.info("Using libxslt download url %s" % self.xslt_url)
-        self.xslt_cmmi.options["url"] = self.xslt_url
-        self.xslt_cmmi.options["extra_options"] = "--with-libxml-prefix=%s --without-python --without-crypto" % self.xml2_location
+
+        options = self.options.copy()
+        options["url"] = self.xslt_url
+        options["extra_options"] = "--with-libxml-prefix=%s --without-python --without-crypto" % self.xml2_location
         # ^^^ crypto is off as libgcrypt can lead to problems on especially osx and also on some linux machines.
+        self.xslt_cmmi = zc.recipe.cmmi.Recipe(self.buildout, "libxslt", options)
 
         if os.path.exists(os.path.join(self.xslt_cmmi.options["location"], "bin", "xslt-config")):
             self.logger.info("Skipping build of libxslt: already there")
@@ -112,8 +112,10 @@ class Recipe(object):
                 versions.get("libxml2-url", "http://dist.repoze.org/lemonade/dev/cmmi/libxml2-2.6.32.tar.gz"))
         self.logger.info("Using libxml2 download url %s" % self.xml2_url)
 
-        self.xml2_cmmi.options["url"] = self.xml2_url
-        self.xml2_cmmi.options["extra_options"] = "--without-python"
+        options = self.options.copy()
+        options["url"] = self.xml2_url
+        options["extra_options"] = "--without-python"
+        self.xml2_cmmi = zc.recipe.cmmi.Recipe(self.buildout, "libxml2", options)
 
         if not self.force and os.path.exists(os.path.join(self.xml2_cmmi.options["location"], "bin", "xml2-config")):
             self.logger.info("Skipping build of libxml2: already there")
@@ -128,6 +130,9 @@ class Recipe(object):
     def install(self):
         options = self.options
         install_location = self.buildout['buildout']['eggs-directory']
+
+        if not os.path.exists(options['location']):
+            os.mkdir(options['location'])
 
         # Only do expensive download/compilation when there's no existing egg.
         path = [install_location]
