@@ -82,3 +82,47 @@ global egg directory.
 If you specified a specific version for the lxml egg, the egg directory is
 checked for an existing lxml egg. If found, it is used as-is. Specifying
 ``force = true`` of course means that this check isn't performed.
+
+Sanity check
+============
+
+This is not a complete exercise of all the ways the recipe can be configured,
+rather it's a sanity check that all parts (especially, recipes we depend on)
+work as expected:
+
+>>> write('buildout.cfg',
+... """
+... [buildout]
+... parts = lxml
+...
+... [lxml]
+... recipe = z3c.recipe.staticlxml
+... libxml2-url = file://%s/foo.tgz
+... libxslt-url = file://%s/foo.tgz
+... xml2-config = none
+... xslt-config = none
+... egg = lxml
+... """ % (distros, distros))
+
+>>> print system('bin/buildout')
+Couldn't find index page for 'zc.recipe.egg' (maybe misspelled?)
+Installing lxml.
+lxml: CMMI libxml2 ...
+lxml: Using libxml2 download url /distros/foo.tgz
+libxml2: Downloading /distros/foo.tgz
+libxml2: Unpacking and configuring
+configuring foo...
+echo building foo
+building foo
+echo installing foo
+installing foo
+lxml: CMMI libxslt ...
+lxml: Using libxslt download url /distros/foo.tgz
+libxslt: Downloading /distros/foo.tgz
+libxslt: Unpacking and configuring
+configuring foo...
+echo building foo
+building foo
+echo installing foo
+installing foo
+lxml: Building lxml ...
