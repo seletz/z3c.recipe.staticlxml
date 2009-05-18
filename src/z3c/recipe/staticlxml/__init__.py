@@ -240,14 +240,14 @@ class Recipe(object):
         if not self.xslt_config:
             self.xslt_config = which("xslt-config", xslt_location)
             if not self.xslt_config:
-                raise UserError("No ``xslt-config`` binary coinfigured and none found in path.")
+                raise UserError("No ``xslt-config`` binary configured and none found in path.")
             self.logger.warn("Using xslt-config found in %s." % self.xslt_config)
 
         self.xml2_config = self.options.get("xml2-config")
         if not self.xml2_config:
             self.xml2_config = which("xml2-config", xml2_location)
             if not self.xml2_config:
-                raise UserError("No ``xml2-config`` binary coinfigured and none found in path.")
+                raise UserError("No ``xml2-config`` binary configured and none found in path.")
             self.logger.warn("Using xml2-config found in %s." % self.xml2_config)
 
         self.logger.debug("xslt-config: %s" % self.xslt_config)
