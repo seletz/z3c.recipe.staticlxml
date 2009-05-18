@@ -1,5 +1,5 @@
-Trunk
-=====
+0.7 (2009-05-18)
+================
 
 - Passing include-dirs, library-dirs and rpath newline separated as required
   by zc.recipe.egg. This fixes non static build on linux.  [zagy]
