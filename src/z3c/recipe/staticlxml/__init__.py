@@ -4,6 +4,7 @@
 import sys
 import os
 import pkg_resources
+import platform
 import logging
 from fnmatch import fnmatch
 
@@ -95,6 +96,8 @@ class Recipe(object):
         options["url"] = self.xslt_url
         options["extra_options"] = "--with-libxml-prefix=%s --without-python --without-crypto" % self.xml2_location
         # ^^^ crypto is off as libgcrypt can lead to problems on especially osx and also on some linux machines.
+        if platform.machine() == 'x86_64':
+            options["extra_options"] += ' --with-pic'
         self.xslt_cmmi = zc.recipe.cmmi.Recipe(self.buildout, "libxslt", options)
 
         if os.path.exists(os.path.join(self.xslt_cmmi.options["location"], "bin", "xslt-config")):
@@ -266,4 +269,4 @@ class Recipe(object):
                 XML_CONFIG=self.xml2_config,
                 LDSHARED=self.get_ldshared())
 
-# vim: set ft=python ts=4 sw=4 expandtab : 
+# vim: set ft=python ts=4 sw=4 expandtab :
