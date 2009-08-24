@@ -118,6 +118,8 @@ class Recipe(object):
         options = self.options.copy()
         options["url"] = self.xml2_url
         options["extra_options"] = "--without-python"
+        if platform.machine() == 'x86_64':
+            options["extra_options"] += ' --with-pic'
         self.xml2_cmmi = zc.recipe.cmmi.Recipe(self.buildout, "libxml2", options)
 
         if not self.force and os.path.exists(os.path.join(self.xml2_cmmi.options["location"], "bin", "xml2-config")):
