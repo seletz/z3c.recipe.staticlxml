@@ -1,7 +1,10 @@
 Trunk
 =====
 
-0.7.1 (unreleased)
+- Fixed "relocation R_x86_64_32" error on 64 bit linux by using --with-pic as
+  extra option to the libxml/libxslt build.  [reinout]
+
+0.7.1 (2009-05-18)
 ==================
 
 - Removed accidentally checked in pdb [wosc]
