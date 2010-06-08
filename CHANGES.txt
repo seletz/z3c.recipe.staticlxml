@@ -1,5 +1,9 @@
-Trunk
-=====
+
+0.7.2 (unreleased)
+==================
+
+- Made smoke test a bit more fuzzy to ignore output differences when newer
+  zc.recipe.cmmi versions are used.
 
 - Fixed "relocation R_x86_64_32" error on 64 bit linux by using --with-pic as
   extra option to the libxml/libxslt build.  [reinout]

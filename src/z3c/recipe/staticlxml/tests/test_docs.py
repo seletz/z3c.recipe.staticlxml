@@ -14,6 +14,7 @@ from zope.testing import doctest, renormalizing
 
 optionflags =  (doctest.ELLIPSIS |
                 doctest.NORMALIZE_WHITESPACE |
+                doctest.REPORT_NDIFF |
                 doctest.REPORT_ONLY_FIRST_FAILURE)
 
 test_dir = os.path.dirname(os.path.abspath(__file__))

@@ -108,8 +108,7 @@ work as expected:
 Couldn't find index page for 'zc.recipe.egg' (maybe misspelled?)
 Installing lxml.
 lxml: CMMI libxml2 ...
-lxml: Using libxml2 download url /distros/foo.tgz
-libxml2: Downloading /distros/foo.tgz
+lxml: Using libxml2 download url /distros/foo.tgz...
 libxml2: Unpacking and configuring
 configuring foo...
 echo building foo
@@ -117,8 +116,7 @@ building foo
 echo installing foo
 installing foo
 lxml: CMMI libxslt ...
-lxml: Using libxslt download url /distros/foo.tgz
-libxslt: Downloading /distros/foo.tgz
+lxml: Using libxslt download url /distros/foo.tgz...
 libxslt: Unpacking and configuring
 configuring foo...
 echo building foo
