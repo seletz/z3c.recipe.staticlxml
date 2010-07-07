@@ -226,7 +226,7 @@ class Recipe(object):
         return LDSHARED
 
     def remove_dynamic_libs(self, path):
-        self.logger.info("Removing dynamic libs form path %s ..." % path)
+        self.logger.info("Removing dynamic libs from path %s ..." % path)
         soext = "so"
 
         if "darwin" in sys.platform:
