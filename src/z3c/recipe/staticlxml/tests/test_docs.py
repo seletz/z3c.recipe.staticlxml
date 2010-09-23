@@ -4,13 +4,14 @@ Doctest runner for 'z3c.recipe.staticlxml'.
 """
 __docformat__ = 'restructuredtext'
 
+from zope.testing import renormalizing
+import doctest
 import os
 import unittest
-import zc.buildout.tests
 import zc.buildout.testing
+import zc.buildout.tests
 import zc.recipe.cmmi.tests
 
-from zope.testing import doctest, renormalizing
 
 optionflags =  (doctest.ELLIPSIS |
                 doctest.NORMALIZE_WHITESPACE |
@@ -18,6 +19,7 @@ optionflags =  (doctest.ELLIPSIS |
                 doctest.REPORT_ONLY_FIRST_FAILURE)
 
 test_dir = os.path.dirname(os.path.abspath(__file__))
+
 
 def setUp(test):
     zc.recipe.cmmi.tests.setUp(test)

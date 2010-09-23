@@ -94,6 +94,7 @@ work as expected:
 ... """
 ... [buildout]
 ... parts = lxml
+... newest = false
 ...
 ... [lxml]
 ... recipe = z3c.recipe.staticlxml
@@ -102,10 +103,10 @@ work as expected:
 ... xml2-config = none
 ... xslt-config = none
 ... egg = lxml
+... static-build = false
 ... """ % (distros, distros))
 
 >>> print system('bin/buildout')
-Couldn't find index page for 'zc.recipe.egg' (maybe misspelled?)
 Installing lxml.
 lxml: CMMI libxml2 ...
 lxml: Using libxml2 download url /distros/foo.tgz...
@@ -122,5 +123,5 @@ configuring foo...
 echo building foo
 building foo
 echo installing foo
-installing foo
+installing foo...
 lxml: Building lxml ...
