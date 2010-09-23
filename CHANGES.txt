@@ -1,5 +1,11 @@
+0.7.3 (unreleased)
+==================
 
-0.7.2 (unreleased)
+- Using Python's ``doctest`` module instead of depreacted
+  ``zope.testing.doctest``.
+
+
+0.7.2 (2010-08-13)
 ==================
 
 - Made smoke test a bit more fuzzy to ignore output differences when newer
@@ -7,9 +13,6 @@
 
 - Fixed "relocation R_x86_64_32" error on 64 bit linux by using --with-pic as
   extra option to the libxml/libxslt build.  [reinout]
-
-- Using Python's ``doctest`` module instead of depreacted
-  ``zope.testing.doctest``.
 
 0.7.1 (2009-05-18)
 ==================
