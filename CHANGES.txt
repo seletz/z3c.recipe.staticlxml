@@ -1,6 +1,11 @@
 0.7.3 (unreleased)
 ==================
 
+- Updated default libxml/libxslt download locations to
+  http://xmlsoft.org/sources/libxml2-2.7.8.tar.gz and
+  http://xmlsoft.org/sources/libxslt-1.1.26.tar.gz respectively. Those updated
+  versions fix a Lion compile issue as reported by jladage.
+
 - Using Python's ``doctest`` module instead of depreacted
   ``zope.testing.doctest``.
 

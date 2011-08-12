@@ -89,7 +89,7 @@ class Recipe(object):
         self.logger.info("CMMI libxslt ...")
         versions = self.buildout.get(self.buildout['buildout'].get('versions', '__invalid__'), {})
         self.options["libxslt-url"] = self.xslt_url = self.options.get("libxslt-url",
-                versions.get("libxslt-url", "http://dist.repoze.org/lemonade/dev/cmmi/libxslt-1.1.24.tar.gz"))
+                versions.get("libxslt-url", "http://xmlsoft.org/sources/libxslt-1.1.26.tar.gz"))
         self.logger.info("Using libxslt download url %s" % self.xslt_url)
 
         options = self.options.copy()
@@ -112,7 +112,7 @@ class Recipe(object):
         self.logger.info("CMMI libxml2 ...")
         versions = self.buildout.get(self.buildout['buildout'].get('versions', '__invalid__'), {})
         self.options["libxml2-url"] = self.xml2_url = self.options.get("libxml2-url",
-                versions.get("libxml2-url", "http://dist.repoze.org/lemonade/dev/cmmi/libxml2-2.6.32.tar.gz"))
+                versions.get("libxml2-url", "http://xmlsoft.org/sources/libxml2-2.7.8.tar.gz"))
         self.logger.info("Using libxml2 download url %s" % self.xml2_url)
 
         options = self.options.copy()
