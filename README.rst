@@ -23,6 +23,8 @@ Please see the `CHANGES.txt` file.
 Contributors
 ============
 
+- Steve McMahon
+
 - Reinout van Rees
 
 - Christian Zagrodnick
