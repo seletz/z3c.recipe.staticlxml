@@ -1,11 +1,13 @@
 # -*- coding: utf-8 -*-
 """Recipe staticlxml"""
 
-import sys
 import os
-import pkg_resources
-import platform
+import sys
 import logging
+import tempfile
+import platform
+import pkg_resources
+
 from fnmatch import fnmatch
 
 from distutils import sysconfig
@@ -17,6 +19,25 @@ from zc.recipe.egg.custom import Custom
 import zc.recipe.cmmi
 
 
+# http://web.nvd.nist.gov/view/vuln/detail?vulnId=CVE-2011-3919
+# http://people.canonical.com/~ubuntu-security/cve/2011/CVE-2011-3919.html
+# http://git.gnome.org/browse/libxml2/commit/?id=5bd3c061823a8499b27422aee04ea20aae24f03e
+patch_cve_2011_3919 = """diff --git a/parser.c b/parser.c
+index 4e5dcb9..c55e41d 100644
+--- a/parser.c
++++ b/parser.c
+@@ -2709,7 +2709,7 @@ xmlStringLenDecodeEntities(xmlParserCtxtPtr ctxt, const xmlChar *str, int len,
+ 
+ 		buffer[nbchars++] = '&';
+ 		if (nbchars > buffer_size - i - XML_PARSER_BUFFER_SIZE) {
+-		    growBuffer(buffer, XML_PARSER_BUFFER_SIZE);
++		    growBuffer(buffer, i + XML_PARSER_BUFFER_SIZE);
+ 		}
+ 		for (;i > 0;i--)
+ 		    buffer[nbchars++] = *cur++;
+"""
+
+
 def which(fname, path=None):
     """Return first matching binary in path or os.environ["PATH"]
     """
@@ -24,7 +45,6 @@ def which(fname, path=None):
         path = os.environ.get("PATH")
     fullpath = filter(os.path.isdir,path.split(os.pathsep))
 
-    out = []
     if '.' not in fullpath:
         fullpath = ['.'] + fullpath
     fn = fname
@@ -108,6 +128,18 @@ class Recipe(object):
 
         self.options["xslt-location"] = self.xslt_location = loc
 
+    def make_cve_2011_3919_patch(self):
+        """make_cve_2011_3919_patch() -> path to patch file
+        
+        Write patch file, return path.
+        """
+        fd, path = tempfile.mkstemp(suffix=".patch")
+        f = os.fdopen(fd, "w")
+        f.write(patch_cve_2011_3919)
+        f.close()
+        return path
+        
+
     def build_libxml2(self):
         self.logger.info("CMMI libxml2 ...")
         versions = self.buildout.get(self.buildout['buildout'].get('versions', '__invalid__'), {})
@@ -117,6 +149,8 @@ class Recipe(object):
 
         options = self.options.copy()
         options["url"] = self.xml2_url
+        options["patch"] = self.make_cve_2011_3919_patch()
+        options["patch_options"] = "-p1"
         options["extra_options"] = "--without-python"
         if platform.machine() == 'x86_64':
             options["extra_options"] += ' --with-pic'
