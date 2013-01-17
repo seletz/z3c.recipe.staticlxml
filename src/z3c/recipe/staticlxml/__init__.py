@@ -5,6 +5,7 @@ import sys
 import os
 import pkg_resources
 import platform
+import re
 import logging
 from fnmatch import fnmatch
 
@@ -266,9 +267,21 @@ class Recipe(object):
     update = install
 
     def lxml_build_env(self):
-        return dict(
+        env = dict(
                 XSLT_CONFIG=self.xslt_config,
                 XML_CONFIG=self.xml2_config,
-                LDSHARED=self.get_ldshared())
+                LDSHARED=self.get_ldshared(),
+                )
+        pc = platform.python_compiler()
+        mo = re.match(r"GCC (\d+).(\d+).(\d+)$", pc)
+        if mo:
+            try:
+                version_tuple = [int(s) for s in mo.groups()]
+            except ValueError:
+                version_tuple = (0, 0, 0)
+            if version_tuple[0] > 4 or version_tuple[0] == 4 and version_tuple[1] >= 5:
+                env['LDFLAGS'] = "-Wl,--no-as-needed,-lrt"
+                self.logger.info("Found %s, adding LDFLAGS to prevent underlinking of librt" % pc)
+        return env
 
 # vim: set ft=python ts=4 sw=4 expandtab :
