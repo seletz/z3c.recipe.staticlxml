@@ -1,7 +1,9 @@
 0.9 (unreleased)
 ================
 
-- Nothing changed yet.
+- Look for gcc >= 4.5. If found, add LDFLAGS for force no-as-needed link
+  of librt. This should cure the missing clock_gettime problem for
+  recent gcc. [smcmahon]
 
 
 0.8 (2011-08-12)
