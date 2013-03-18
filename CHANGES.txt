@@ -1,4 +1,4 @@
-0.9 (unreleased)
+0.9 (2013-03-18)
 ================
 
 - Check if ld will accept the --no-as-needed link flag without an "unknown option"
