@@ -93,11 +93,17 @@ class Recipe(object):
         self.options["libxslt-url"] = self.xslt_url = self.options.get("libxslt-url",
                 versions.get("libxslt-url", "http://xmlsoft.org/sources/libxslt-1.1.26.tar.gz"))
         self.options["libxslt-patch"] = self.xslt_patch = self.options.get("libxslt-patch", "")
+        self.options["libxslt-patch_options"] = \
+            self.xslt_patch_options = self.options.get("libxslt-patch_options", "-p0")
         self.logger.info("Using libxslt download url %s" % self.xslt_url)
+        if self.xslt_patch != "":
+            self.logger.info(
+                "Patching libxslt with %s using %s", self.xslt_patch, self.xslt_patch_options)
 
         options = self.options.copy()
         options["url"] = self.xslt_url
         options["patch"] = self.xslt_patch
+        options["patch_options"] = self.xslt_patch_options
         options["extra_options"] = "--with-libxml-prefix=%s --without-python --without-crypto" % self.xml2_location
         # ^^^ crypto is off as libgcrypt can lead to problems on especially osx and also on some linux machines.
         if platform.machine() == 'x86_64':
@@ -118,12 +124,18 @@ class Recipe(object):
         self.options["libxml2-url"] = self.xml2_url = self.options.get("libxml2-url",
                 versions.get("libxml2-url", "http://xmlsoft.org/sources/libxml2-2.7.8.tar.gz"))
         self.options["libxml2-patch"] = self.xml2_patch = self.options.get("libxml2-patch", "")
+        self.options["libxml2-patch_options"] = \
+            self.xml2_patch_options = self.options.get("libxml2-patch_options", "-p0")
         self.logger.info("Using libxml2 download url %s" % self.xml2_url)
+        if self.xml2_patch != "":
+            self.logger.info(
+                "Patching libxml2 with %s using %s", self.xml2_patch, self.xml2_patch_options)
 
         options = self.options.copy()
         options["url"] = self.xml2_url
         options["extra_options"] = "--without-python"
         options["patch"] = self.xml2_patch
+        options["patch_options"] = self.xml2_patch_options
         if platform.machine() == 'x86_64':
             options["extra_options"] += ' --with-pic'
         self.xml2_cmmi = zc.recipe.cmmi.Recipe(self.buildout, "libxml2", options)
