@@ -92,10 +92,12 @@ class Recipe(object):
         versions = self.buildout.get(self.buildout['buildout'].get('versions', '__invalid__'), {})
         self.options["libxslt-url"] = self.xslt_url = self.options.get("libxslt-url",
                 versions.get("libxslt-url", "http://xmlsoft.org/sources/libxslt-1.1.26.tar.gz"))
+        self.options["libxslt-patch"] = self.xslt_patch = self.options.get("libxslt-patch", "")
         self.logger.info("Using libxslt download url %s" % self.xslt_url)
 
         options = self.options.copy()
         options["url"] = self.xslt_url
+        options["patch"] = self.xslt_patch
         options["extra_options"] = "--with-libxml-prefix=%s --without-python --without-crypto" % self.xml2_location
         # ^^^ crypto is off as libgcrypt can lead to problems on especially osx and also on some linux machines.
         if platform.machine() == 'x86_64':
@@ -115,11 +117,13 @@ class Recipe(object):
         versions = self.buildout.get(self.buildout['buildout'].get('versions', '__invalid__'), {})
         self.options["libxml2-url"] = self.xml2_url = self.options.get("libxml2-url",
                 versions.get("libxml2-url", "http://xmlsoft.org/sources/libxml2-2.7.8.tar.gz"))
+        self.options["libxml2-patch"] = self.xml2_patch = self.options.get("libxml2-patch", "")
         self.logger.info("Using libxml2 download url %s" % self.xml2_url)
 
         options = self.options.copy()
         options["url"] = self.xml2_url
         options["extra_options"] = "--without-python"
+        options["patch"] = self.xml2_patch
         if platform.machine() == 'x86_64':
             options["extra_options"] += ' --with-pic'
         self.xml2_cmmi = zc.recipe.cmmi.Recipe(self.buildout, "libxml2", options)
