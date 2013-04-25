@@ -116,7 +116,7 @@ class Recipe(object):
         options["url"] = self.xslt_url
         options["extra_options"] = "--with-libxml-prefix=%s --without-python --without-crypto" % self.xml2_location
         # ^^^ crypto is off as libgcrypt can lead to problems on especially osx and also on some linux machines.
-        if platform.machine() == 'x86_64':
+        if platform.machine() in ('x86_64', 'amd64'):
             options["extra_options"] += ' --with-pic'
         self.xslt_cmmi = zc.recipe.cmmi.Recipe(self.buildout, "libxslt", options)
 
@@ -152,7 +152,7 @@ class Recipe(object):
         options["patch"] = self.make_cve_2011_3919_patch()
         options["patch_options"] = "-p1"
         options["extra_options"] = "--without-python"
-        if platform.machine() == 'x86_64':
+        if platform.machine() in ('x86_64', 'amd64'):
             options["extra_options"] += ' --with-pic'
         self.xml2_cmmi = zc.recipe.cmmi.Recipe(self.buildout, "libxml2", options)
 
