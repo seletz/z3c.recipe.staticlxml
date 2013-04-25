@@ -27,7 +27,7 @@ index 4e5dcb9..c55e41d 100644
 --- a/parser.c
 +++ b/parser.c
 @@ -2709,7 +2709,7 @@ xmlStringLenDecodeEntities(xmlParserCtxtPtr ctxt, const xmlChar *str, int len,
- 
+
  		buffer[nbchars++] = '&';
  		if (nbchars > buffer_size - i - XML_PARSER_BUFFER_SIZE) {
 -		    growBuffer(buffer, XML_PARSER_BUFFER_SIZE);
@@ -130,7 +130,7 @@ class Recipe(object):
 
     def make_cve_2011_3919_patch(self):
         """make_cve_2011_3919_patch() -> path to patch file
-        
+
         Write patch file, return path.
         """
         fd, path = tempfile.mkstemp(suffix=".patch")
@@ -138,7 +138,7 @@ class Recipe(object):
         f.write(patch_cve_2011_3919)
         f.close()
         return path
-        
+
 
     def build_libxml2(self):
         self.logger.info("CMMI libxml2 ...")
