@@ -1,13 +1,15 @@
 # -*- coding: utf-8 -*-
 """Recipe staticlxml"""
 
-import sys
 import os
-import pkg_resources
-import platform
 import re
+import sys
 import logging
+import tempfile
+import platform
 import subprocess
+import pkg_resources
+
 from fnmatch import fnmatch
 
 from distutils import sysconfig
@@ -19,14 +21,32 @@ from zc.recipe.egg.custom import Custom
 import zc.recipe.cmmi
 
 
+# http://web.nvd.nist.gov/view/vuln/detail?vulnId=CVE-2011-3919
+# http://people.canonical.com/~ubuntu-security/cve/2011/CVE-2011-3919.html
+# http://git.gnome.org/browse/libxml2/commit/?id=5bd3c061823a8499b27422aee04ea20aae24f03e
+patch_cve_2011_3919 = """diff --git a/parser.c b/parser.c
+index 4e5dcb9..c55e41d 100644
+--- a/parser.c
++++ b/parser.c
+@@ -2709,7 +2709,7 @@ xmlStringLenDecodeEntities(xmlParserCtxtPtr ctxt, const xmlChar *str, int len,
+
+        buffer[nbchars++] = '&';
+        if (nbchars > buffer_size - i - XML_PARSER_BUFFER_SIZE) {
+-           growBuffer(buffer, XML_PARSER_BUFFER_SIZE);
++           growBuffer(buffer, i + XML_PARSER_BUFFER_SIZE);
+        }
+        for (;i > 0;i--)
+            buffer[nbchars++] = *cur++;
+"""
+
+
 def which(fname, path=None):
     """Return first matching binary in path or os.environ["PATH"]
     """
     if path is None:
         path = os.environ.get("PATH")
-    fullpath = filter(os.path.isdir,path.split(os.pathsep))
+    fullpath = filter(os.path.isdir, path.split(os.pathsep))
 
-    out = []
     if '.' not in fullpath:
         fullpath = ['.'] + fullpath
     fn = fname
@@ -34,7 +54,7 @@ def which(fname, path=None):
         for f in os.listdir(p):
             head, ext = os.path.splitext(f)
             if f == fn or fnmatch(head, fn):
-                return os.path.join(p,f)
+                return os.path.join(p, f)
     return None
 
 
@@ -59,7 +79,7 @@ class Recipe(object):
             self.xslt_location = options.get("xslt-location")
             if not self.xslt_location:
                 raise UserError("You must either configure ``xslt-location`` or set"
-                        " ``build-libxslt`` to ``true``")
+                                " ``build-libxslt`` to ``true``")
 
         # XML2 build or location option
         build_xml2 = options.get("build-libxml2", "true")
@@ -70,14 +90,14 @@ class Recipe(object):
             self.xml2_location = options.get("xml2-location")
             if not self.xml2_location:
                 raise UserError("You must either configure ``xml2-location`` or set"
-                        " ``build-libxml2`` to ``true``")
+                                " ``build-libxml2`` to ``true``")
 
         # static build option
         static_build = options.get("static-build", "darwin" in sys.platform and "true" or None)
         self.static_build = static_build in ("true", "True")
         if self.static_build and not (self.build_xml2 and self.build_xslt):
             raise UserError("Static build is only possible if both "
-                    "``build-libxml2`` and ``build-libxslt`` are ``true``.")
+                            "``build-libxml2`` and ``build-libxslt`` are ``true``.")
         if self.static_build:
             self.logger.info("Static build requested.")
         options["static-build"] = self.static_build and "true" or "false"
@@ -90,8 +110,9 @@ class Recipe(object):
     def build_libxslt(self):
         self.logger.info("CMMI libxslt ...")
         versions = self.buildout.get(self.buildout['buildout'].get('versions', '__invalid__'), {})
-        self.options["libxslt-url"] = self.xslt_url = self.options.get("libxslt-url",
-                versions.get("libxslt-url", "http://xmlsoft.org/sources/libxslt-1.1.26.tar.gz"))
+        self.options["libxslt-url"] = self.xslt_url = self.options.get(
+            "libxslt-url",
+            versions.get("libxslt-url", "http://xmlsoft.org/sources/libxslt-1.1.26.tar.gz"))
         self.options["libxslt-patch"] = self.xslt_patch = self.options.get("libxslt-patch", "")
         self.options["libxslt-patch_options"] = \
             self.xslt_patch_options = self.options.get("libxslt-patch_options", "-p0")
@@ -106,7 +127,7 @@ class Recipe(object):
         options["patch_options"] = self.xslt_patch_options
         options["extra_options"] = "--with-libxml-prefix=%s --without-python --without-crypto" % self.xml2_location
         # ^^^ crypto is off as libgcrypt can lead to problems on especially osx and also on some linux machines.
-        if platform.machine() == 'x86_64':
+        if platform.machine() in ('x86_64', 'amd64'):
             options["extra_options"] += ' --with-pic'
         self.xslt_cmmi = zc.recipe.cmmi.Recipe(self.buildout, "libxslt", options)
 
@@ -118,11 +139,23 @@ class Recipe(object):
 
         self.options["xslt-location"] = self.xslt_location = loc
 
+    def make_cve_2011_3919_patch(self):
+        """make_cve_2011_3919_patch() -> path to patch file
+
+        Write patch file, return path.
+        """
+        fd, path = tempfile.mkstemp(suffix=".patch")
+        f = os.fdopen(fd, "w")
+        f.write(patch_cve_2011_3919)
+        f.close()
+        return path
+
     def build_libxml2(self):
         self.logger.info("CMMI libxml2 ...")
         versions = self.buildout.get(self.buildout['buildout'].get('versions', '__invalid__'), {})
-        self.options["libxml2-url"] = self.xml2_url = self.options.get("libxml2-url",
-                versions.get("libxml2-url", "http://xmlsoft.org/sources/libxml2-2.7.8.tar.gz"))
+        self.options["libxml2-url"] = self.xml2_url = self.options.get(
+            "libxml2-url",
+            versions.get("libxml2-url", "http://xmlsoft.org/sources/libxml2-2.7.8.tar.gz"))
         self.options["libxml2-patch"] = self.xml2_patch = self.options.get("libxml2-patch", "")
         self.options["libxml2-patch_options"] = \
             self.xml2_patch_options = self.options.get("libxml2-patch_options", "-p0")
@@ -133,10 +166,12 @@ class Recipe(object):
 
         options = self.options.copy()
         options["url"] = self.xml2_url
+        options["patch"] = self.make_cve_2011_3919_patch()
+        options["patch_options"] = "-p1"
         options["extra_options"] = "--without-python"
         options["patch"] = self.xml2_patch
         options["patch_options"] = self.xml2_patch_options
-        if platform.machine() == 'x86_64':
+        if platform.machine() in ('x86_64', 'amd64'):
             options["extra_options"] += ' --with-pic'
         self.xml2_cmmi = zc.recipe.cmmi.Recipe(self.buildout, "libxml2", options)
 
@@ -159,7 +194,7 @@ class Recipe(object):
 
         # Only do expensive download/compilation when there's no existing egg.
         path = [install_location]
-        req_string = self.options['egg'] # 'lxml' or 'lxml == 2.0.9'
+        req_string = self.options['egg']  # 'lxml' or 'lxml == 2.0.9'
         version_part = self.buildout['buildout'].get('versions')
         if version_part:
             version_req = self.buildout[version_part].get('lxml')
@@ -194,7 +229,7 @@ class Recipe(object):
             self.logger.warn("Using configured libxslt at %s" % self.xslt_location)
 
         # get the config executables
-        self.get_configs( os.path.join(self.xml2_location, "bin"), os.path.join(self.xslt_location, "bin"))
+        self.get_configs(os.path.join(self.xml2_location, "bin"), os.path.join(self.xslt_location, "bin"))
 
         if self.static_build:
             self.remove_dynamic_libs(self.xslt_location)
@@ -209,11 +244,11 @@ class Recipe(object):
             os.path.join(self.xml2_location, "include", "libxml2"),
             os.path.join(self.xslt_location, "include")])
         options["library-dirs"] = '\n'.join([
-                os.path.join(self.xml2_location, "lib"),
-                os.path.join(self.xslt_location, "lib")])
+            os.path.join(self.xml2_location, "lib"),
+            os.path.join(self.xslt_location, "lib")])
         options["rpath"] = '\n'.join([
-                os.path.join(self.xml2_location, "lib"),
-                os.path.join(self.xslt_location, "lib")])
+            os.path.join(self.xml2_location, "lib"),
+            os.path.join(self.xslt_location, "lib")])
 
         if "darwin" in sys.platform:
             self.logger.warn("Adding ``iconv`` to libs due to a lxml setup bug.")
@@ -289,10 +324,10 @@ class Recipe(object):
 
     def lxml_build_env(self):
         env = dict(
-                XSLT_CONFIG=self.xslt_config,
-                XML_CONFIG=self.xml2_config,
-                LDSHARED=self.get_ldshared(),
-                )
+            XSLT_CONFIG=self.xslt_config,
+            XML_CONFIG=self.xml2_config,
+            LDSHARED=self.get_ldshared(),
+        )
         # see if ld accepts --no-as-needed flag
         po = subprocess.Popen("ld --no-as-needed",
                               shell=True,
