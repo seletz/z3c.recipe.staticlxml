@@ -250,12 +250,16 @@ class Recipe(object):
         if "darwin" in sys.platform:
             soext = "dylib"
 
-        path = os.path.join(path, "lib")
+        paths = (os.path.join(path, "lib"),
+                 os.path.join(path, "lib64"))
 
-        for fname in os.listdir(path):
-            if fname.endswith(soext):
-                os.unlink(os.path.join(path, fname))
-                self.logger.debug("removing %s" % fname)
+        for path in paths:
+            if not os.path.exists(path):
+                continue
+            for fname in os.listdir(path):
+                if fname.endswith(soext):
+                    os.unlink(os.path.join(path, fname))
+                    self.logger.debug("removing %s" % fname)
 
     def get_configs(self, xml2_location=None, xslt_location=None):
         """Get the executables for libxml2 and libxslt configuration
