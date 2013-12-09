@@ -13,10 +13,10 @@ import zc.buildout.tests
 import zc.recipe.cmmi.tests
 
 
-optionflags =  (doctest.ELLIPSIS |
-                doctest.NORMALIZE_WHITESPACE |
-                doctest.REPORT_NDIFF |
-                doctest.REPORT_ONLY_FIRST_FAILURE)
+optionflags = (doctest.ELLIPSIS |
+               doctest.NORMALIZE_WHITESPACE |
+               doctest.REPORT_NDIFF |
+               doctest.REPORT_ONLY_FIRST_FAILURE)
 
 test_dir = os.path.dirname(os.path.abspath(__file__))
 
@@ -33,23 +33,23 @@ def setUp(test):
 
 def test_suite():
     suite = unittest.TestSuite((
-            doctest.DocFileSuite(
-                '../README.txt',
-                setUp=setUp,
-                tearDown=zc.buildout.testing.buildoutTearDown,
-                optionflags=optionflags,
-                globs=dict(test_dir=test_dir),
-                checker=renormalizing.RENormalizing([
-                        # If want to clean up the doctest output you
-                        # can register additional regexp normalizers
-                        # here. The format is a two-tuple with the RE
-                        # as the first item and the replacement as the
-                        # second item, e.g.
-                        # (re.compile('my-[rR]eg[eE]ps'), 'my-regexps')
-                        zc.buildout.testing.normalize_path,
-                        ]),
-                ),
-            ))
+        doctest.DocFileSuite(
+            '../README.txt',
+            setUp=setUp,
+            tearDown=zc.buildout.testing.buildoutTearDown,
+            optionflags=optionflags,
+            globs=dict(test_dir=test_dir),
+            checker=renormalizing.RENormalizing([
+                # If want to clean up the doctest output you
+                # can register additional regexp normalizers
+                # here. The format is a two-tuple with the RE
+                # as the first item and the replacement as the
+                # second item, e.g.
+                # (re.compile('my-[rR]eg[eE]ps'), 'my-regexps')
+                zc.buildout.testing.normalize_path,
+                ]),
+            ),
+        ))
     return suite
 
 if __name__ == '__main__':
