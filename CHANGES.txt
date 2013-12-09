@@ -1,4 +1,4 @@
-0.10 (unreleased)
+0.10 (2013-12-09)
 =================
 
 - Added possibility to patch both libxslt and libxml2 using cmmi's

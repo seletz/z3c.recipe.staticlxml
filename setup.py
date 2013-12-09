@@ -8,7 +8,7 @@ from setuptools import setup, find_packages
 def read(*rnames):
     return open(os.path.join(os.path.dirname(__file__), *rnames)).read()
 
-version = '0.10.dev0'
+version = '0.10'
 
 long_description = (
     read('README.rst')
@@ -31,29 +31,30 @@ long_description = (
     'Download\n'
     '********\n'
     )
+
 entry_point = 'z3c.recipe.staticlxml:Recipe'
 entry_points = {"zc.buildout": ["default = %s" % entry_point]}
 
-tests_require=['zope.testing', 'zc.buildout[test]', 'zc.recipe.egg', 'zc.recipe.cmmi']
+tests_require = ['zope.testing', 'zc.buildout[test]', 'zc.recipe.egg', 'zc.recipe.cmmi']
 
 setup(name='z3c.recipe.staticlxml',
       version=version,
       description="A recipe to build lxml",
       long_description=long_description,
       classifiers=[
-        'Framework :: Buildout',
-        'Intended Audience :: Developers',
-        'Topic :: Software Development :: Build Tools',
-        'Topic :: Software Development :: Libraries :: Python Modules',
-        'License :: OSI Approved :: Zope Public License',
-        ],
+          'Framework :: Buildout',
+          'Intended Audience :: Developers',
+          'Topic :: Software Development :: Build Tools',
+          'Topic :: Software Development :: Libraries :: Python Modules',
+          'License :: OSI Approved :: Zope Public License',
+      ],
       keywords='buildout recipe lxml static',
       author='Stefan Eletzhofer',
       author_email='se@nexiles.de',
       url='http://svn.zope.org/z3c.recipe.staticlxml/trunk',
       license='ZPL',
       packages=find_packages('src', exclude=['ez_setup']),
-      package_dir = {'': 'src'},
+      package_dir={'': 'src'},
       namespace_packages=['z3c', 'z3c.recipe'],
       include_package_data=True,
       zip_safe=False,
@@ -65,6 +66,6 @@ setup(name='z3c.recipe.staticlxml',
                         ],
       tests_require=tests_require,
       extras_require=dict(tests=tests_require),
-      test_suite = 'z3c.recipe.staticlxml.tests.test_docs.test_suite',
+      test_suite='z3c.recipe.staticlxml.tests.test_docs.test_suite',
       entry_points=entry_points,
       )
