@@ -2,10 +2,12 @@
 """Recipe staticlxml"""
 
 import os
+import re
 import sys
 import logging
 import tempfile
 import platform
+import subprocess
 import pkg_resources
 
 from fnmatch import fnmatch
@@ -28,13 +30,13 @@ index 4e5dcb9..c55e41d 100644
 +++ b/parser.c
 @@ -2709,7 +2709,7 @@ xmlStringLenDecodeEntities(xmlParserCtxtPtr ctxt, const xmlChar *str, int len,
 
- 		buffer[nbchars++] = '&';
- 		if (nbchars > buffer_size - i - XML_PARSER_BUFFER_SIZE) {
--		    growBuffer(buffer, XML_PARSER_BUFFER_SIZE);
-+		    growBuffer(buffer, i + XML_PARSER_BUFFER_SIZE);
- 		}
- 		for (;i > 0;i--)
- 		    buffer[nbchars++] = *cur++;
+        buffer[nbchars++] = '&';
+        if (nbchars > buffer_size - i - XML_PARSER_BUFFER_SIZE) {
+-           growBuffer(buffer, XML_PARSER_BUFFER_SIZE);
++           growBuffer(buffer, i + XML_PARSER_BUFFER_SIZE);
+        }
+        for (;i > 0;i--)
+            buffer[nbchars++] = *cur++;
 """
 
 
@@ -110,10 +112,18 @@ class Recipe(object):
         versions = self.buildout.get(self.buildout['buildout'].get('versions', '__invalid__'), {})
         self.options["libxslt-url"] = self.xslt_url = self.options.get("libxslt-url",
                 versions.get("libxslt-url", "http://xmlsoft.org/sources/libxslt-1.1.26.tar.gz"))
+        self.options["libxslt-patch"] = self.xslt_patch = self.options.get("libxslt-patch", "")
+        self.options["libxslt-patch_options"] = \
+            self.xslt_patch_options = self.options.get("libxslt-patch_options", "-p0")
         self.logger.info("Using libxslt download url %s" % self.xslt_url)
+        if self.xslt_patch != "":
+            self.logger.info(
+                "Patching libxslt with %s using %s", self.xslt_patch, self.xslt_patch_options)
 
         options = self.options.copy()
         options["url"] = self.xslt_url
+        options["patch"] = self.xslt_patch
+        options["patch_options"] = self.xslt_patch_options
         options["extra_options"] = "--with-libxml-prefix=%s --without-python --without-crypto" % self.xml2_location
         # ^^^ crypto is off as libgcrypt can lead to problems on especially osx and also on some linux machines.
         if platform.machine() in ('x86_64', 'amd64'):
@@ -145,13 +155,21 @@ class Recipe(object):
         versions = self.buildout.get(self.buildout['buildout'].get('versions', '__invalid__'), {})
         self.options["libxml2-url"] = self.xml2_url = self.options.get("libxml2-url",
                 versions.get("libxml2-url", "http://xmlsoft.org/sources/libxml2-2.7.8.tar.gz"))
+        self.options["libxml2-patch"] = self.xml2_patch = self.options.get("libxml2-patch", "")
+        self.options["libxml2-patch_options"] = \
+            self.xml2_patch_options = self.options.get("libxml2-patch_options", "-p0")
         self.logger.info("Using libxml2 download url %s" % self.xml2_url)
+        if self.xml2_patch != "":
+            self.logger.info(
+                "Patching libxml2 with %s using %s", self.xml2_patch, self.xml2_patch_options)
 
         options = self.options.copy()
         options["url"] = self.xml2_url
         options["patch"] = self.make_cve_2011_3919_patch()
         options["patch_options"] = "-p1"
         options["extra_options"] = "--without-python"
+        options["patch"] = self.xml2_patch
+        options["patch_options"] = self.xml2_patch_options
         if platform.machine() in ('x86_64', 'amd64'):
             options["extra_options"] += ' --with-pic'
         self.xml2_cmmi = zc.recipe.cmmi.Recipe(self.buildout, "libxml2", options)
@@ -266,12 +284,16 @@ class Recipe(object):
         if "darwin" in sys.platform:
             soext = "dylib"
 
-        path = os.path.join(path, "lib")
+        paths = (os.path.join(path, "lib"),
+                 os.path.join(path, "lib64"))
 
-        for fname in os.listdir(path):
-            if fname.endswith(soext):
-                os.unlink(os.path.join(path, fname))
-                self.logger.debug("removing %s" % fname)
+        for path in paths:
+            if not os.path.exists(path):
+                continue
+            for fname in os.listdir(path):
+                if fname.endswith(soext):
+                    os.unlink(os.path.join(path, fname))
+                    self.logger.debug("removing %s" % fname)
 
     def get_configs(self, xml2_location=None, xslt_location=None):
         """Get the executables for libxml2 and libxslt configuration
@@ -300,9 +322,20 @@ class Recipe(object):
     update = install
 
     def lxml_build_env(self):
-        return dict(
+        env = dict(
                 XSLT_CONFIG=self.xslt_config,
                 XML_CONFIG=self.xml2_config,
-                LDSHARED=self.get_ldshared())
+                LDSHARED=self.get_ldshared(),
+                )
+        # see if ld accepts --no-as-needed flag
+        po = subprocess.Popen("ld --no-as-needed",
+                              shell=True,
+                              universal_newlines=True,
+                              stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
+        stdout, stderr = po.communicate()
+        if "unknown option" not in stdout.lower():
+            self.logger.info("Adding LDFLAGS to prevent underlinking of librt")
+            env['LDFLAGS'] = "-Wl,--no-as-needed,-lrt"
+        return env
 
 # vim: set ft=python ts=4 sw=4 expandtab :

@@ -1,3 +1,22 @@
+0.10 (unreleased)
+=================
+
+- Added possibility to patch both libxslt and libxml2 using cmmi's
+  patch / patch_options command internally (#7) [shanx]
+
+- Fix to run some 64 bit Linux, like Suse Linux, too. [icemac]
+
+0.9 (2013-03-18)
+================
+
+- Check if ld will accept the --no-as-needed link flag without an "unknown option"
+  error. If it will, use the flag. This should cure the missing clock_gettime
+  problem. [smcmahon]
+
+- Look for gcc >= 4.5. If found, add LDFLAGS for force no-as-needed link
+  of librt. This should cure the missing clock_gettime problem for
+  recent gcc. [smcmahon]
+
 0.8.1 (unreleased)
 ==================
 
@@ -6,8 +25,6 @@
   http://web.nvd.nist.gov/view/vuln/detail?vulnId=CVE-2011-3919
   http://people.canonical.com/~ubuntu-security/cve/2011/CVE-2011-3919.html
   http://git.gnome.org/browse/libxml2/commit/?id=5bd3c061823a8499b27422aee04ea20aae24f03e
-
-  Thanks to Steve McMahon for submitting.
 
 
 0.8 (2011-08-12)

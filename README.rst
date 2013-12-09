@@ -28,3 +28,5 @@ Contributors
 - Reinout van Rees
 
 - Christian Zagrodnick
+
+- Remco Wendt

@@ -8,7 +8,7 @@ from setuptools import setup, find_packages
 def read(*rnames):
     return open(os.path.join(os.path.dirname(__file__), *rnames)).read()
 
-version = '0.9dev'
+version = '0.10.dev0'
 
 long_description = (
     read('README.rst')
@@ -18,14 +18,14 @@ long_description = (
     + '\n' +
     read('src', 'z3c', 'recipe', 'staticlxml', 'README.txt')
     + '\n' +
-    'Contributors\n' 
+    'Contributors\n'
     '************\n'
     + '\n' +
     read('CONTRIBUTORS.txt')
     + '\n' +
     'Change history\n'
     '**************\n'
-    + '\n' + 
+    + '\n' +
     read('CHANGES.txt')
     + '\n' +
     'Download\n'
@@ -34,7 +34,7 @@ long_description = (
 entry_point = 'z3c.recipe.staticlxml:Recipe'
 entry_points = {"zc.buildout": ["default = %s" % entry_point]}
 
-tests_require=['zope.testing', 'zc.buildout', 'zc.recipe.egg', 'zc.recipe.cmmi']
+tests_require=['zope.testing', 'zc.buildout[test]', 'zc.recipe.egg', 'zc.recipe.cmmi']
 
 setup(name='z3c.recipe.staticlxml',
       version=version,
