@@ -2,7 +2,7 @@
 z3c.recipe.staticlxml
 =====================
 
-:Version: 0.8.1
+:Version: 0.10
 :Author:  Stefan Eletzhofer
 
 Abstract
@@ -23,10 +23,12 @@ Please see the `CHANGES.txt` file.
 Contributors
 ============
 
-- Steve McMahon
-
-- Reinout van Rees
-
+- Christian Theune
 - Christian Zagrodnick
-
+- Godefroid Chapelle
+- Michael Howitz
+- Reinout van Rees
 - Remco Wendt
+- Stefan Eletzhofer, Author
+- Steve McMahon
+- fdrake (https://github.com/fdrake)
